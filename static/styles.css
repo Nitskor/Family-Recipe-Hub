@@ -1,0 +1,10 @@
+.result-box {
+  max-height: 500px; /* Limit the height */
+  overflow-y: auto; /* Add vertical scrolling if content exceeds height */
+  border: 1px solid #ccc; /* Add a border */
+  padding: 10px; /* Add padding inside the box */
+  background-color: #f8f9fa; /* Light background for better readability */
+  border-radius: 5px; /* Rounded corners */
+  font-family: Arial, sans-serif; /* Set a readable font */
+  color: #333; /* Text color */
+}

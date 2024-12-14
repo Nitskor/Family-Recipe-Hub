@@ -22,6 +22,9 @@
         <i>{{ form.submit_button(class="btn btn-primary mt-3") }}</i><br>
         <i>{{ form.clear_button(class="btn btn-secondary mt-3") }}</i><br>
       </form>
+      <p>
+        <div class="result-box">{{ result|safe }}</div>
+      </p>
     </div>
     <a href="{{ url_for('login') }}" class="text-primary">
       <i class="fas fa-sign-out-alt"></i> Click here to logout

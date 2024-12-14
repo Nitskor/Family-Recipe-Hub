@@ -11,9 +11,15 @@ from flask_bcrypt import Bcrypt
 import pymysql
 import urllib.parse
 from langchain_groq import ChatGroq
+import markdown2
 
 
 load_dotenv()
+
+llm = ChatGroq(model="llama-3.1-70b-versatile",temperature=0,groq_api_key = os.getenv('GROQ_API_KEY'))
+result = llm.invoke("what is the recipie for appam")
+formated_result = markdown2.markdown(result.content)
+
 
 password = urllib.parse.quote_plus(os.getenv('MySql_password'))
 engine = create_engine(f'mysql+pymysql://root:{password}@localhost')
@@ -86,7 +92,7 @@ def login():
 def dashboard():
   form = QuestionForm()
 
-  return render_template('dashboard.html',form=form)
+  return render_template('dashboard.html',form=form,result=formated_result)
 
 @app.route('/logout',methods=['GET','POST'])
 @login_required
