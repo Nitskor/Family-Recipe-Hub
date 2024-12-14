@@ -6,10 +6,12 @@ from sqlalchemy import create_engine,text
 from flask_login import LoginManager,UserMixin,login_user,login_required,logout_user,current_user
 from flask_wtf import FlaskForm
 from wtforms import StringField,PasswordField,SubmitField
-from wtforms.validators import InputRequired,Length,ValidationError
+from wtforms.validators import InputRequired,Length,ValidationError,DataRequired
 from flask_bcrypt import Bcrypt
 import pymysql
 import urllib.parse
+from langchain_groq import ChatGroq
+
 
 load_dotenv()
 
@@ -57,6 +59,13 @@ class LoginForm(FlaskForm):
     password = PasswordField(validators=(InputRequired(),Length(min=4, max=20)),render_kw={"placeholder":"Password"})
     submit = SubmitField('Login')
 
+class QuestionForm(FlaskForm):
+   question = StringField(validators=[InputRequired()],render_kw={"placeholder":"How can I help you?"})
+   submit_button = SubmitField("Submit")
+   clear_button = SubmitField("Clear Previous Questions and Answers")
+  
+
+
 @app.route('/')
 def home():
   return render_template('home.html')
@@ -75,7 +84,9 @@ def login():
 @app.route('/dashboard',methods=['GET','POST'])
 @login_required
 def dashboard():
-  return render_template('dashboard.html')
+  form = QuestionForm()
+
+  return render_template('dashboard.html',form=form)
 
 @app.route('/logout',methods=['GET','POST'])
 @login_required
