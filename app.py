@@ -1,12 +1,13 @@
 import os
 from dotenv import load_dotenv
-from flask import Flask,render_template,url_for
+from flask import Flask,render_template,url_for,redirect
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine,text
 from flask_login import LoginManager,UserMixin
 from flask_wtf import FlaskForm
 from wtforms import StringField,PasswordField,SubmitField
 from wtforms.validators import InputRequired,Length,ValidationError
+from flask_bcrypt import Bcrypt
 import pymysql
 import urllib.parse
 
@@ -19,6 +20,8 @@ with engine.connect() as connection:
     connection.execute(text("CREATE DATABASE IF NOT EXISTS users"))
 
 app = Flask(__name__)
+
+bcrypt = Bcrypt(app)
 
 app.config['SECRET_KEY'] = 'secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://root:{password}@localhost:3306/users'
@@ -58,6 +61,13 @@ def login():
 @app.route('/register',methods=['GET','POST'])
 def register():
   form = RegisterForm()
+  if form.validate_on_submit():
+     hashed_password = bcrypt.generate_password_hash(form.password.data)
+     new_user = User(username=form.username.data,password=hashed_password)
+     db.session.add(new_user)
+     db.session.commit()
+     return redirect(url_for('login'))
+    
   return render_template('register.html',form=form)
 
 
