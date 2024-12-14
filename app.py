@@ -13,7 +13,7 @@ import urllib.parse
 
 load_dotenv()
 
-password = urllib.parse.quote_plus('nitin@2024')
+password = urllib.parse.quote_plus(os.getenv('MySql_password'))
 engine = create_engine(f'mysql+pymysql://root:{password}@localhost')
 
 with engine.connect() as connection:
